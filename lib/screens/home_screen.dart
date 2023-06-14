@@ -1,5 +1,6 @@
 import 'package:cats_app/backend/cats_service.dart';
 import 'package:cats_app/models/cats_model.dart';
+import 'package:cats_app/widgets/cats_intelligence_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,8 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
-                  //physics: const NeverScrollableScrollPhysics(),
-                  //physics: const BouncingScrollPhysics(),
                   child: Center(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -52,8 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: catsModel == null
                             ? [const CircularProgressIndicator()]
                             : List.generate(catsModel!.length, (index) {
-                                print(
-                                    "https://cdn2.thecatapi.com/images/${catsModel![index].referenceImageId}.jpg");
                                 return Card(
                                   elevation: 10,
                                   shape: RoundedRectangleBorder(
@@ -67,21 +64,57 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     child: Column(
                                       children: [
-                                        Image.network(
-                                          "https://cdn2.thecatapi.com/images/${catsModel![index].referenceImageId}.jpg",
-                                          width: double.infinity,
-                                          height: 200,
-                                          fit: BoxFit.fill,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Image.network(
-                                              "https://placekitten.com/200/300", // URL de imagen de reemplazo
-                                              width: double.infinity,
-                                              height: 200,
-                                              fit: BoxFit.cover,
-                                            );
-                                          },
-                                        )
+                                        Stack(children: [
+                                          Image.network(
+                                            "https://cdn2.thecatapi.com/images/${catsModel![index].referenceImageId}.jpg",
+                                            width: double.infinity,
+                                            height: 300,
+                                            fit: BoxFit.fill,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return Image.network(
+                                                "https://placekitten.com/200/300", // URL de imagen de reemplazo
+                                                width: double.infinity,
+                                                height: 300,
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                          ),
+                                          Positioned(
+                                            top: 10,
+                                            left: 10,
+                                            child: Text(
+                                              catsModel![index].name!,
+                                              style: const TextStyle(
+                                                  fontStyle: FontStyle.italic,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 18,
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            left: 10,
+                                            bottom: 10,
+                                            child: Text(
+                                              catsModel![index].origin ??
+                                                  "Unknown",
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 18,
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                          Positioned(
+                                              right: 10,
+                                              bottom: 10,
+                                              child: CatCircles(
+                                                  number: catsModel![index]
+                                                      .intelligence!) /*CatsIntelligenceIndicator(
+                                                number: catsModel![index]
+                                                        .intelligence ??
+                                                    0),*/
+                                              ),
+                                        ])
                                       ],
                                     ),
                                   ),
